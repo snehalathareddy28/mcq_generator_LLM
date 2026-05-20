@@ -1,0 +1,42 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>Your Test History</h2>
+
+{% if attempts %}
+    <table style="width: 100%; border-collapse: collapse; margin-top: 20px;">
+        <thead>
+            <tr style="background-color: #333; color: white; text-align: left;">
+                <th style="padding: 12px;">Date Taken</th>
+                <th style="padding: 12px;">Topic</th>
+                <th style="padding: 12px;">Difficulty</th>
+                <th style="padding: 12px;">Score</th>
+                <th style="padding: 12px;">Percentage</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for attempt in attempts %}
+            <tr style="border-bottom: 1px solid #ddd;">
+                <td style="padding: 12px;">{{ attempt.taken_at.strftime('%Y-%m-%d %H:%M') }}</td>
+                <td style="padding: 12px;">{{ attempt.test.topic }}</td>
+                <td style="padding: 12px;">{{ attempt.test.difficulty }}</td>
+                <td style="padding: 12px; font-weight: bold;">{{ attempt.score }} / {{ attempt.max_score }}</td>
+                <td style="padding: 12px;">
+                    {% set pct = (attempt.score / attempt.max_score * 100) | round(1) %}
+                    {% if pct >= 80 %}
+                        <span style="color: green;">{{ pct }}%</span>
+                    {% elif pct >= 50 %}
+                        <span style="color: orange;">{{ pct }}%</span>
+                    {% else %}
+                        <span style="color: red;">{{ pct }}%</span>
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+{% else %}
+    <p>You haven't taken any tests yet.</p>
+{% endif %}
+
+{% endblock %}

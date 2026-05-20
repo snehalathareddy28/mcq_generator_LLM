@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h2>
+    {% if gen_type == 'pdf' %}
+        Generate MCQs for PDF Download
+    {% else %}
+        Generate MCQs for Online Test
+    {% endif %}
+</h2>
+
+<p style="margin-bottom: 20px; color: #666;">
+    {% if gen_type == 'pdf' %}
+        Fill out the form below to generate a new set of questions. Once generated, your PDF will automatically start downloading.
+    {% else %}
+        Fill out the form below to generate a new set of questions. Once generated, you will be redirected to the test-taking interface.
+    {% endif %}
+</p>
+
+<form method="POST" style="margin-bottom: 40px; padding: 20px; background: #f9f9f9; border: 1px solid #ddd; border-radius: 8px;">
+    <div class="form-group">
+        <label>Main Heading (Optional)</label>
+        <input type="text" name="main_heading" placeholder="e.g. Midterm Exam">
+        <small style="color: #666; display: block; margin-top: 5px;">This will be used as the title of the test.</small>
+    </div>
+    <div class="form-group">
+        <label>Topic(s)</label>
+        <input type="text" name="topic" placeholder="e.g. Python, Machine Learning, Data Science" required>
+        <small style="color: #666; display: block; margin-top: 5px;">You can enter multiple topics separated by commas.</small>
+    </div>
+    <div class="form-group">
+        <label>Difficulty</label>
+        <select name="difficulty">
+            <option>Easy</option>
+            <option>Medium</option>
+            <option>Hard</option>
+        </select>
+    </div>
+    <div class="form-group">
+        <label>Number of Questions</label>
+        <input type="number" name="num_questions" min="1" value="5">
+    </div>
+    <button type="submit" class="btn" id="generateBtn" onclick="document.getElementById('loading').style.display='block';">Generate Test</button>
+    <a href="{{ url_for('home') }}" class="btn" style="background-color: #6c757d; margin-left: 10px;">Cancel</a>
+    
+    <div id="loading" style="display: none; margin-top: 15px; color: #007bff; font-weight: bold;">
+        Generating questions (this may take a while depending on hardware)...
+    </div>
+</form>
+
+{% endblock %}

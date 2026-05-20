@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block content %}
+
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+    <h2>Test: {{ test.display_heading }} ({{ test.difficulty }})</h2>
+    <div style="font-size: 24px; font-weight: bold; color: #dc3545;" id="timer">Loading...</div>
+</div>
+
+<form id="testForm" method="POST" action="{{ url_for('submit_test', test_id=test.id) }}">
+    
+    {% for q in test.questions %}
+    <div class="mcq" style="margin-bottom: 25px; background: #fff; padding: 20px; border: 1px solid #ddd; border-radius: 8px;">
+        <h3 style="font-size: 18px; margin-bottom: 15px; color: #333;">{{ loop.index }}. {{ q.question_text }}</h3>
+
+        <div style="display: flex; flex-direction: column; gap: 10px;">
+            <label><input type="radio" name="q_{{ q.id }}" value="{{ q.option_a }}" required> A. {{ q.option_a }}</label>
+            <label><input type="radio" name="q_{{ q.id }}" value="{{ q.option_b }}"> B. {{ q.option_b }}</label>
+            <label><input type="radio" name="q_{{ q.id }}" value="{{ q.option_c }}"> C. {{ q.option_c }}</label>
+            <label><input type="radio" name="q_{{ q.id }}" value="{{ q.option_d }}"> D. {{ q.option_d }}</label>
+        </div>
+    </div>
+    {% endfor %}
+
+    <button type="submit" class="btn" style="width: 100%; font-size: 18px; padding: 15px;">Submit Answers</button>
+</form>
+
+<script>
+    // 60 seconds per question
+    var totalQuestions = {{ test.questions|length }};
+    var timeLeft = totalQuestions * 60; 
+    
+    var timerElement = document.getElementById('timer');
+    
+    var countdown = setInterval(function() {
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            timerElement.innerHTML = "Time's up!";
+            document.getElementById('testForm').submit();
+        } else {
+            var minutes = Math.floor(timeLeft / 60);
+            var seconds = timeLeft % 60;
+            if (seconds < 10) seconds = "0" + seconds;
+            timerElement.innerHTML = minutes + ":" + seconds;
+        }
+        timeLeft -= 1;
+    }, 1000);
+</script>
+
+{% endblock %}
